@@ -25,6 +25,7 @@ on:
 
 env:
   REPO_URL: https://github.com/Lienol/openwrt
+  AUTHOR: Lienol 
   REPO_BRANCH: 19.07
   FEEDS_CONF: feeds.conf.default-lienol-x64
   CONFIG_FILE: .config-lienol-x64-1907
@@ -137,7 +138,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_firmware_${{ $AUTHOR }}${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Upload firmware to cowtransfer
