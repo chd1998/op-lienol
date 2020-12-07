@@ -28,7 +28,7 @@ env:
   AUTHOR: lean
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default-lean-x64
-  CONFIG_FILE: .config-lean-x64-master
+  CONFIG_FILE: .config.x64-lean-20201207-1504
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
