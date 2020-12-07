@@ -28,7 +28,7 @@ env:
   AUTHOR: Lienol 
   REPO_BRANCH: 19.07
   FEEDS_CONF: feeds.conf.default-lienol-x64
-  CONFIG_FILE: .config-lienol-x64-1907
+  CONFIG_FILE: .config.x64-lienol-20201207-1202
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
