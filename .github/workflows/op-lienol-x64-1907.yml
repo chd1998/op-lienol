@@ -29,7 +29,8 @@ env:
   REPO_BRANCH: 19.07
   FEEDS_CONF: feeds.conf.default-lienol-x64
   #CONFIG_FILE: .config-lienol-x64-1g-10g-20201212
-  CONFIG_FILE: .config-1g-10g-20210209-x64 
+  #CONFIG_FILE: .config-1g-10g-20210209-x64 
+  CONFIG_FILE: .config-x64-1g-10g-20210226
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
   UPLOAD_BIN_DIR: false
