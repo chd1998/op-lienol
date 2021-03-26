@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build OpenWrt lean x64 master
+name: Build OpenWrt lean x64 
 
 on:
   repository_dispatch:
@@ -19,7 +19,7 @@ on:
         required: false
         default: 'true'
   schedule:
-    - cron: 0 8 1 * *
+  - cron: 0 8 1 * *
   watch:
     types: started
 
@@ -132,7 +132,7 @@ jobs:
       uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: OpenWrt_firmwaree_${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
+        name: OpenWrt_firmware_${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Upload firmware to cowtransfer
@@ -170,11 +170,11 @@ jobs:
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
 
-    - name: Remove old Artifacts
-      uses: c-hive/gha-remove-artifacts@v1.2.0
+    - name: Delete workflow runs
+      uses: GitRML/delete-workflow-runs@main
       with:
-        age: '1 day'
-        skip-recent: 3
+        retain_days: 1
+        keep_minimum_runs: 3
 
     - name: Remove old Releases
       uses: dev-drprasad/delete-older-releases@v0.1.0
