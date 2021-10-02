@@ -28,7 +28,7 @@ env:
   AUTHOR: lean
   REPO_BRANCH: master
   FEEDS_CONF: feeds.conf.default-lean-x64
-  CONFIG_FILE: .config-lean-x64-1g-8g-20210306
+  CONFIG_FILE: .config-1g-10g-x64-lean-20210930
   DEVICE_NAME: x64-lean
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
