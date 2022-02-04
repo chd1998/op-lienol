@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build X64 OpenWrt lienol main
+name: Build OpenWrt lienol x64 main
 
 on:
   repository_dispatch:
@@ -19,7 +19,7 @@ on:
         required: false
         default: 'true'
   schedule:
-  - cron: 0 8 30 * *
+  - cron: 0 8 1 * *
   watch:
     types: started
 
@@ -27,7 +27,7 @@ env:
   REPO_URL: https://github.com/Lienol/openwrt
   AUTHOR: Lienol 
   REPO_BRANCH: main
-  FEEDS_CONF: feeds.conf.default-main-lienol
+  FEEDS_CONF: feeds.conf.default-lienol-x64
   #CONFIG_FILE: .config-lienol-x64-1g-10g-20201212
   #CONFIG_FILE: .config-1g-10g-20210209-x64 
   #CONFIG_FILE: .config-1g-10g-x64-lienol-20210929
@@ -39,12 +39,12 @@ env:
   UPLOAD_FIRMWARE: true
   UPLOAD_COWTRANSFER: false
   UPLOAD_WETRANSFER: false
-  UPLOAD_RELEASE: true
+  UPLOAD_RELEASE: false
   TZ: Asia/Shanghai
 
 jobs:
   build:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-18.04
 
     steps:
     - name: Checkout
@@ -56,7 +56,7 @@ jobs:
       run: |
         sudo rm -rf /etc/apt/sources.list.d/* /usr/share/dotnet /usr/local/lib/android /opt/ghc
         sudo -E apt-get -qq update
-        sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-2004)
+        sudo -E apt-get -qq install $(curl -fsSL git.io/depends-ubuntu-1804)
         sudo -E apt-get -qq autoremove --purge
         sudo -E apt-get -qq clean
         sudo timedatectl set-timezone "$TZ"
@@ -117,10 +117,10 @@ jobs:
       run: df -hT
 
     - name: Upload bin directory
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@main
       if: steps.compile.outputs.status == 'success' && env.UPLOAD_BIN_DIR == 'true'
       with:
-        name: OpenWrt_bin_${{ env.AUTHOR }}_${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
+        name: OpenWrt_bin${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: openwrt/bin
 
     - name: Organize files
@@ -131,12 +131,11 @@ jobs:
         rm -rf packages
         echo "FIRMWARE=$PWD" >> $GITHUB_ENV
         echo "::set-output name=status::success"
-        
     - name: Upload firmware directory
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@main
       if: steps.organize.outputs.status == 'success' && !cancelled()
       with:
-        name: OpenWrt_bin_${{ env.AUTHOR }}_${{ env.DEVICE_NAME }}_${{ env.FILE_DATE }}
+        name: OpenWrt_firmware_${{ env.DEVICE_NAME }}${{ env.FILE_DATE }}
         path: ${{ env.FIRMWARE }}
 
     - name: Upload firmware to cowtransfer
@@ -147,7 +146,6 @@ jobs:
         ./transfer cow --block 2621440 -s -p 64 --no-progress ${FIRMWARE} 2>&1 | tee cowtransfer.log
         echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
         echo "::set-output name=url::$(cat cowtransfer.log | grep https | cut -f3 -d" ")"
-        
     - name: Upload firmware to WeTransfer
       id: wetransfer
       if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
