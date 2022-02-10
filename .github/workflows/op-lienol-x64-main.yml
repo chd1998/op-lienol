@@ -31,7 +31,7 @@ env:
   #CONFIG_FILE: .config-lienol-x64-1g-10g-20201212
   #CONFIG_FILE: .config-1g-10g-20210209-x64 
   #CONFIG_FILE: .config-1g-10g-x64-lienol-20210929
-  CONFIG_FILE: .config-1g-10g-lienol-20220201
+  CONFIG_FILE: .config-1g-10g-lienol-main-20220210
   DEVICE_NAME: x64-lienol
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
