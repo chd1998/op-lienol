@@ -71,7 +71,8 @@ jobs:
         git clone -b $REPO_BRANCH --single-branch $REPO_URL  openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
         cd /workdir/openwrt/package
-        git clone https://github.com/destan19/OpenAppFilter.git package/OpenAppFilter
+        rm -rf OpenAppFilter/
+        git clone https://github.com/destan19/OpenAppFilter.git 
         
     - name: Load custom feeds
       run: |
