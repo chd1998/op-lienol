@@ -70,9 +70,9 @@ jobs:
         df -hT $PWD
         git clone -b $REPO_BRANCH --single-branch $REPO_URL  openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
-        cd /workdir/openwrt/package
-        rm -rf OpenAppFilter/
-        git clone https://github.com/destan19/OpenAppFilter.git 
+        #cd /workdir/openwrt/package
+        #rm -rf OpenAppFilter/
+        #git clone https://github.com/destan19/OpenAppFilter.git 
         
     - name: Load custom feeds
       run: |
