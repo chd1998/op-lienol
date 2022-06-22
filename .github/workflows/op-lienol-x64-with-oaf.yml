@@ -89,11 +89,6 @@ jobs:
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
-      
-    - name: modify protobuf-c makefile
-      run: |
-        cd openwrt/feeds/packages/libs/protobuf-c
-        sed -i '/PKG_BUILD_DEPENDS:=protobuf-c\/host/s/PKG_BUILD_DEPENDS:=protobuf-c\/host/PKG_BUILD_DEPENDS:=protobuf\/host/g' Makefile
 
     - name: Load custom configuration
       run: |
