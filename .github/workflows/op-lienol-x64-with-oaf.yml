@@ -73,7 +73,10 @@ jobs:
         cd /workdir/openwrt/package
         rm -rf OpenAppFilter/
         git clone https://github.com/destan19/OpenAppFilter.git
-        cd /workdir/openwrt/feeds/packages/libs/protobuf-c/
+        
+    - name: modify protobuf-c makefile
+      run: |
+        cd openwrt/feeds/packages/libs/protobuf-c/
         sed -i '/PKG_BUILD_DEPENDS:=protobuf-c\/host/s/PKG_BUILD_DEPENDS:=protobuf-c\/host/PKG_BUILD_DEPENDS:=protobuf\/host/g' Makefile
         
     - name: Load custom feeds
