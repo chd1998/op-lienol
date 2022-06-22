@@ -70,6 +70,7 @@ jobs:
         df -hT $PWD
         git clone -b $REPO_BRANCH --single-branch $REPO_URL  openwrt
         ln -sf /workdir/openwrt $GITHUB_WORKSPACE/openwrt
+        sed -i '/PKG_BUILD_DEPENDS:=protobuf-c\/host/s/PKG_BUILD_DEPENDS:=protobuf-c\/host/PKG_BUILD_DEPENDS:=protobuf\/host/g' /workdir/openwrt/feeds/packages/libs/protobuf-c/Makefile
         cd /workdir/openwrt/package
         rm -rf OpenAppFilter/
         git clone https://github.com/destan19/OpenAppFilter.git 
