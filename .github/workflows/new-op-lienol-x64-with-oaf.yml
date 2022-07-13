@@ -187,15 +187,6 @@ jobs:
         delete_tags: true
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-        sudo -E apt-get -qq install libxml2-dev libgeos++-dev libpq-dev libbz2-dev proj-bin automake
-        sudo -E apt-get -qq install libprotobuf-dev libprotobuf-c-dev protobuf-compiler protobuf-c-compiler 
-        sudo -E apt-get -qq install curl make g++ unzip pkg-config        
-        sudo -E apt-get -qq autoremove --purge
-        sudo -E apt-get -qq clean
-        sudo timedatectl set-timezone "$TZ"
-        sudo mkdir -p /workdir
-        sudo chown $USER:$GROUPS /workdir
         
     - name: Clone source code
       working-directory: /workdir
