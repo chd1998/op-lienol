@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: Build OpenWrt lienol x64 21.02 with Open Application Filter
+name: Build OpenWrt lienol x64 21.02 with OAF
 
 on:
   repository_dispatch:
