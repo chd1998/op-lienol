@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: lienol x64(1g/2g) 2102 with OAF
+name: 2102 lienol x64(1g/2g) with OAF
 
 on:
   repository_dispatch:
