@@ -27,11 +27,11 @@ env:
   REPO_URL: https://github.com/Lienol/openwrt
   AUTHOR: Lienol 
   REPO_BRANCH: 22.03
-  FEEDS_CONF: feeds.conf.default-2102-lienol
+  FEEDS_CONF: feeds.conf.default-2203-lienol
   #CONFIG_FILE: .config-lienol-x64-1g-10g-20201212
   #CONFIG_FILE: .config-1g-10g-20210209-x64 
   #CONFIG_FILE: .config-1g-10g-x64-lienol-20210929
-  CONFIG_FILE: .config-x64-lienol
+  CONFIG_FILE: .config-2203-x64-lienol
   DEVICE_NAME: x64-lienol
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
@@ -85,7 +85,7 @@ jobs:
       run: cd openwrt && ./scripts/feeds clean
       
     - name: Update feeds
-      run: cd openwrt && ./scripts/feeds update -a
+      run: cd openwrt && ./scripts/feeds update -a && pushd feeds/packages/lang && rm -fr golang && svn co https://github.com/openwrt/packages/trunk/lang/golang && popd
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
