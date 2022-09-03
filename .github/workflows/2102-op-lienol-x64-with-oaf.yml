@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: lienol x64(1g/2g) 22.03 with OAF
+name: lienol x64(1g/2g) 2102 with OAF
 
 on:
   repository_dispatch:
@@ -26,7 +26,7 @@ on:
 env:
   REPO_URL: https://github.com/Lienol/openwrt
   AUTHOR: Lienol 
-  REPO_BRANCH: 22.03
+  REPO_BRANCH: 21.02
   FEEDS_CONF: feeds.conf.default-2102-lienol
   #CONFIG_FILE: .config-lienol-x64-1g-10g-20201212
   #CONFIG_FILE: .config-1g-10g-20210209-x64 
