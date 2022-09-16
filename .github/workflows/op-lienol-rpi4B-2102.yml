@@ -76,7 +76,7 @@ jobs:
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P1_SH
     - name: Update feeds
-      run: cd openwrt && ./scripts/feeds update -a
+      run: cd openwrt && ./scripts/feeds update -a && pushd feeds/packages/lang && rm -fr golang && svn co https://github.com/openwrt/packages/trunk/lang/golang && popd
 
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a
