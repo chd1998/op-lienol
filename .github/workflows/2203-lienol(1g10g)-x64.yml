@@ -35,7 +35,7 @@ env:
   DEVICE_NAME: x64-lienol
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
-  UPLOAD_BIN_DIR: false
+  UPLOAD_BIN_DIR: true
   UPLOAD_FIRMWARE: true
 #  UPLOAD_COWTRANSFER: false
 #  UPLOAD_WETRANSFER: false
@@ -251,12 +251,3 @@ jobs:
       with:
         retain_days: 7
         keep_minimum_runs: 7
-
-    - name: Remove old Releases
-      uses: dev-drprasad/delete-older-releases@v0.3.2
-      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
-      with:
-        keep_latest: 7
-        delete_tags: true
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
