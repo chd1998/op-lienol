@@ -8,7 +8,7 @@
 # Description: Build OpenWrt using GitHub Actions
 #
 
-name: 2203 lienol x64(1g/10g) with OAF
+name: BuildOpenWrt
 
 on:
   repository_dispatch:
@@ -18,27 +18,22 @@ on:
         description: 'SSH connection to Actions'
         required: false
         default: 'false'
-  schedule:
-  - cron: 01 07 20 * *
-  watch:
-    types: started
+      cache:
+        description: 'Cache wrt build'
+        required: false
+        default: 'true'
 
 env:
   REPO_URL: https://github.com/Lienol/openwrt
-  AUTHOR: Lienol 
   REPO_BRANCH: 22.03
   FEEDS_CONF: feeds.conf.default
-  #CONFIG_FILE: .config-lienol-x64-1g-10g-20201212
-  #CONFIG_FILE: .config-1g-10g-20210209-x64 
-  #CONFIG_FILE: .config-1g-10g-x64-lienol-20210929
-  CONFIG_FILE: .config.lienol
-  DEVICE_NAME: x64-lienol
+  CONFIG_FILE: .config.lieonl
   DIY_P1_SH: diy-part1.sh
   DIY_P2_SH: diy-part2.sh
-  UPLOAD_BIN_DIR: true
+  UPLOAD_BIN_DIR: false
   UPLOAD_FIRMWARE: true
-#  UPLOAD_COWTRANSFER: false
-#  UPLOAD_WETRANSFER: false
+  UPLOAD_COWTRANSFER: false
+  UPLOAD_WETRANSFER: false
   UPLOAD_RELEASE: true
   TZ: Asia/Shanghai
 
@@ -136,6 +131,19 @@ jobs:
     - name: Install feeds
       run: cd openwrt && ./scripts/feeds install -a -f
 
+    - name: Openwrt AutoUpdate
+      run: |
+        TEMP=$(date +"OpenWrt_%Y%m%d_%H%M%S_")$(git rev-parse --short HEAD)
+        echo "RELEASE_TAG=$TEMP" >> $GITHUB_ENV
+        #required>>add "DISTRIB_GITHUB" to "zzz-default-settings"
+        sed -i "/DISTRIB_DESCRIPTION=/a\sed -i '/DISTRIB_GITHUB/d' /etc/openwrt_release" openwrt/package/lean/default-settings/files/zzz-default-settings
+        sed -i "/DISTRIB_GITHUB/a\echo \"DISTRIB_GITHUB=\'https://github.com/${{github.repository}}\'\" >> /etc/openwrt_release" openwrt/package/lean/default-settings/files/zzz-default-settings
+        #required>>add "DISTRIB_VERSIONS" to "zzz-default-settings"
+        sed -i "/DISTRIB_DESCRIPTION=/a\sed -i '/DISTRIB_VERSIONS/d' /etc/openwrt_release" openwrt/package/lean/default-settings/files/zzz-default-settings
+        sed -i "/DISTRIB_VERSIONS/a\echo \"DISTRIB_VERSIONS=\'${TEMP:8}\'\" >> /etc/openwrt_release" openwrt/package/lean/default-settings/files/zzz-default-settings
+        #nonessential>>add "github.actor" to "DISTRIB_DESCRIPTION" in "zzz-default-settings"
+        sed -i "s/OpenWrt /${{github.actor}} compiled (${TEMP:8}) \/ OpenWrt /g" openwrt/package/lean/default-settings/files/zzz-default-settings
+
     - name: Load custom configuration
       run: |
         [ -e files ] && mv files openwrt/files
@@ -143,7 +151,7 @@ jobs:
         chmod +x $DIY_P2_SH
         cd openwrt
         $GITHUB_WORKSPACE/$DIY_P2_SH
-#        cat package/lean/default-settings/files/zzz-default-settings
+        cat package/lean/default-settings/files/zzz-default-settings
         
     - name: SSH connection to Actions
       uses: P3TERX/ssh2actions@v1.0.0
@@ -226,6 +234,24 @@ jobs:
       with:
         name: OpenWrt_firmware${{ env.DEVICE_NAME }}${{ steps.date.outputs.date }}
         path: ${{ env.FIRMWARE }}
+
+    - name: Upload firmware to cowtransfer
+      id: cowtransfer
+      if: steps.organize.outputs.status == 'success' && env.UPLOAD_COWTRANSFER == 'true' && !cancelled()
+      run: |
+        curl -fsSL git.io/file-transfer | sh
+        ./transfer cow --block 2621440 -s -p 64 --no-progress ${FIRMWARE} 2>&1 | tee cowtransfer.log
+        echo "::warning file=cowtransfer.com::$(cat cowtransfer.log | grep https)"
+        echo "url::$(cat cowtransfer.log | grep https | cut -f3 -d" ")" >> $GITHUB_OUTPUT
+        
+    - name: Upload firmware to WeTransfer
+      id: wetransfer
+      if: steps.organize.outputs.status == 'success' && env.UPLOAD_WETRANSFER == 'true' && !cancelled()
+      run: |
+        curl -fsSL git.io/file-transfer | sh
+        ./transfer wet -s -p 16 --no-progress ${FIRMWARE} 2>&1 | tee wetransfer.log
+        echo "::warning file=wetransfer.com::$(cat wetransfer.log | grep https)"
+        echo "url::$(cat wetransfer.log | grep https | cut -f3 -d" ")" >> $GITHUB_OUTPUT
         
     - name: Generate release tag
       id: tag
@@ -245,3 +271,18 @@ jobs:
         tag_name: ${{ env.RELEASE_TAG }}
         body_path: release.txt
         files: ${{ env.FIRMWARE }}/*
+
+    - name: Delete workflow runs
+      uses: Mattraks/delete-workflow-runs@v2
+      with:
+        retain_days: 7
+        keep_minimum_runs: 7
+
+    - name: Remove old Releases
+      uses: dev-drprasad/delete-older-releases@v0.3.2
+      if: env.UPLOAD_RELEASE == 'true' && !cancelled()
+      with:
+        keep_latest: 7
+        delete_tags: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
